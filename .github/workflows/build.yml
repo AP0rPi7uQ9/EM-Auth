@@ -56,7 +56,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: ./postgresql-linux-amd64.zip
-          asset_name: normal-${{ steps.create_release.outputs.tag }}-linux-x64.zip
+          asset_name: postgresql-${{ steps.create_release.outputs.tag }}-linux-amd64.zip
           asset_content_type: application/zip
 
 
@@ -67,7 +67,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: ./mysql-linux-amd64.zip
-          asset_name: normal-${{ steps.create_release.outputs.tag }}-linux-x64.zip
+          asset_name: mysql-${{ steps.create_release.outputs.tag }}-linux-amd64.zip
           asset_content_type: application/zip
 
 
@@ -78,7 +78,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: ./postgresql-windows-amd64.zip
-          asset_name: normal-${{ steps.create_release.outputs.tag }}-windows-x64.zip
+          asset_name: postgresql-${{ steps.create_release.outputs.tag }}-windows-amd64.zip
           asset_content_type: application/zip
 
 
@@ -89,5 +89,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: ./mysql-windows-amd64.zip
-          asset_name: normal-${{ steps.create_release.outputs.tag }}-windows-x64.zip
+          asset_name: mysql-${{ steps.create_release.outputs.tag }}-windows-amd64.zip
           asset_content_type: application/zip
