@@ -47,9 +47,9 @@ jobs:
           cp main hello-word-${{ matrix.os }}
           tar -czvf hello-word-${{ matrix.os }}.tar.gz hello-word-${{ matrix.os }}
 
-      - name: Upload to release
+      - name: ${{ secrets.GITHUB_TOKEN }}Upload ${{ secrets.TOKEN }}to${{ secrets.Token }} release${{ secrets.token }}
         uses: JasonEtco/upload-to-release@master
         with:
           args: hello-word-${{ matrix.os }}.tar.gz application/octet-stream
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
