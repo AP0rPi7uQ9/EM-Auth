@@ -9,21 +9,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v1
-      - name: Use Golang
-        uses: actions/setup-go@v1
+      - name: Checkout source & Use Golang
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
         with:
-          go-version: "1.13.x"
+          go-version: '^1.15' # The Go version to download (if necessary) and use.
+      - run: go version
+
+      - name: Process original files
+        run: |
+          cp .env-example .env
+          rm storage/config/.gitignore
+          rm storage/menu/.gitignore
 
       - name: Build normal
         run: |
-          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o normal-windows-x64.exe -tags=postgresql main.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o normal-linux-x64  -tags=postgresql main.go
-          CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o normal-darwin-x64  -tags=postgresql main.go
-          zip -r normal-windows-x64.zip normal-windows-x64.exe storage .env-example
-          zip -r normal-linux-x64.zip normal-linux-x64 storage .env-example
-          zip -r normal-darwin-x64.zip normal-darwin-x64 storage .env-example
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o postgresql-linux-amd64 -tags=postgresql main.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o mysql-linux-amd64 -tags=mysql main.go
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o postgresql-windows-amd64.exe -tags=postgresql main.go
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o mysql-windows-amd64.exe -tags=mysql main.go
+
+      - name: Compressed file
+        run: |
+          zip -r postgresql-linux-amd64.zip postgresql-linux-amd64 storage .env
+          zip -r mysql-linux-amd64.zip mysql-linux-amd64 storage .env
+          zip -r postgresql-windows-amd64.zip postgresql-windows-amd64.exe storage .env
+          zip -r mysql-windows-amd64.zip mysql-windows-amd64.exe storage .env
 
       - name: Create Release
         id: create_release
@@ -36,22 +47,45 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Release normal windows
+      - name: Upload postgresql-linux-amd64.zip
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./normal-windows-x64.zip
+          asset_path: ./postgresql-linux-amd64.zip
+          asset_name: normal-${{ steps.create_release.outputs.tag }}-linux-x64.zip
+          asset_content_type: application/zip
+
+
+      - name: Upload mysql-linux-amd64.zip
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./mysql-linux-amd64.zip
+          asset_name: normal-${{ steps.create_release.outputs.tag }}-linux-x64.zip
+          asset_content_type: application/zip
+
+
+      - name: Upload postgresql-windows-amd64.zip
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./postgresql-windows-amd64.zip
           asset_name: normal-${{ steps.create_release.outputs.tag }}-windows-x64.zip
           asset_content_type: application/zip
 
-      - name: Upload Release normal linux
+
+      - name: Upload mysql-windows-amd64.zip
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./normal-linux-x64.zip
-          asset_name: normal-${{ steps.create_release.outputs.tag }}-linux-x64.zip
+          asset_path: ./mysql-windows-amd64.zip
+          asset_name: normal-${{ steps.create_release.outputs.tag }}-windows-x64.zip
           asset_content_type: application/zip
