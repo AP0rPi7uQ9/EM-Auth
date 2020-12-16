@@ -21,9 +21,9 @@ jobs:
           CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o normal-windows-x64.exe -tags=postgresql main.go
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o normal-linux-x64  -tags=postgresql main.go
           CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o normal-darwin-x64  -tags=postgresql main.go
-          zip normal-windows-x64.zip normal-windows-x64.exe
-          zip normal-linux-x64.zip normal-linux-x64
-          zip normal-darwin-x64.zip normal-darwin-x64
+          zip -r normal-windows-x64.zip normal-windows-x64.exe storage .env-example
+          zip -r normal-linux-x64.zip normal-linux-x64 storage .env-example
+          zip -r normal-darwin-x64.zip normal-darwin-x64 storage .env-example
 
       - name: Create Release
         id: create_release
