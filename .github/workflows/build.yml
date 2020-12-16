@@ -10,8 +10,10 @@ jobs:
 
     steps:
       - name: Checkout source & Use Golang
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+        uses: actions/checkout@v2
+
+      - name: Use Golang
+        uses: actions/setup-go@v2
         with:
           go-version: '^1.15' # The Go version to download (if necessary) and use.
       - run: go version
